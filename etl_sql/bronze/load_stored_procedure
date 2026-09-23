@@ -1,0 +1,107 @@
+/*
+===============================================================================
+Stored Procedure: Load Bronze Layer (Source -> Bronze)
+===============================================================================
+Script Purpose:
+    This stored procedure loads data into the 'bronze' schema from external CSV files. 
+    It performs the following actions:
+    - Truncates the bronze tables before loading data.
+    - Uses the `BULK INSERT` command to load data from csv Files to bronze tables.
+
+Parameters:
+    None. 
+	  This stored procedure does not accept any parameters or return any values.
+
+Usage Example:
+    EXEC bronze.load_
+
+===============================================================================
+*/
+
+
+DROP PROCEDURE bronze.load_
+
+CREATE OR ALTER PROCEDURE bronze.load_ AS
+BEGIN
+	DECLARE @start_batch_time AS DATETIME, @end_batch_time AS DATETIME
+
+	SET @start_batch_time = GETDATE();
+	BEGIN TRY
+		PRINT'===================================';
+		PRINT'Loading the Bronze Layer';
+		PRINT'===================================';
+
+
+		
+			TRUNCATE TABLE bronze.household
+
+		PRINT'>>>Inserting Data Into Table: bronze.household ';
+			BULK INSERT bronze.household
+			FROM 'D:\Desktop_SD_new\Healthcare\NSO\Data_copy\csv\level1_csv.csv'
+			WITH (
+				FIRSTROW=2,
+				FIELDTERMINATOR= ',',
+				TABLOCK
+				)
+
+
+			TRUNCATE TABLE bronze.person
+
+		PRINT'>>>Inserting Data Into Table: bronze.person';
+			BULK INSERT bronze.person
+			FROM 'D:\Desktop_SD_new\Healthcare\NSO\Data_copy\csv\level2_csv.csv'
+			WITH (
+				FIRSTROW=2,
+				FIELDTERMINATOR= ',',
+				TABLOCK
+				)
+		
+
+			TRUNCATE TABLE bronze.hospitalisation
+
+		PRINT'>>>Inserting Data Into Table: bronze.hospitalisation';
+			BULK INSERT bronze.hospitalisation
+			FROM 'D:\Desktop_SD_new\Healthcare\NSO\Data_copy\csv\level4_csv.csv'
+			WITH (
+				FIRSTROW=2,
+				FIELDTERMINATOR= ',',
+				TABLOCK
+				)
+
+
+			TRUNCATE TABLE bronze.patient
+
+		PRINT'>>>Inserting Data Into Table: bronze.patient';
+			BULK INSERT bronze.patient
+			FROM 'D:\Desktop_SD_new\Healthcare\NSO\Data_copy\csv\level5_csv.csv'
+			WITH (
+				FIRSTROW=2,
+				FIELDTERMINATOR= ',',
+				TABLOCK
+				)
+
+		
+			TRUNCATE TABLE bronze.state_
+
+		PRINT'>>>Inserting Data Into Table: bronze.state_';
+			BULK INSERT bronze.state_
+			FROM 'D:\Desktop_SD_new\Healthcare\NSO\Data_copy\csv\state.csv'
+			WITH (
+				FIRSTROW=2,
+				FIELDTERMINATOR= ',',
+				TABLOCK
+				)
+
+		SET @end_batch_time = GETDATE();
+		PRINT'>>>Loading Duration of Whole Batch:' +CAST(DATEDIFF(second,@start_batch_time,@end_batch_time)AS NVARCHAR) +'seconds';
+
+	END TRY
+	BEGIN CATCH
+		PRINT'====================================================';
+		PRINT'An Error Occured During The Loading Of Bronze Layer';
+		PRINT 'Error Message' + ':' + ERROR_MESSAGE();
+        PRINT 'Error Number' + ':' + CAST(ERROR_NUMBER() AS NVARCHAR);
+		PRINT 'Error State' + ':' + CAST(ERROR_STATE() AS NVARCHAR); 
+		PRINT'====================================================';
+	END CATCH
+END
