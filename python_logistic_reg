@@ -1,0 +1,147 @@
+/*
+=====================================================
+Purpose: Python script to run the logistic regression
+on the dependent variable uninsured and gender, 
+age, risk, region, sector being the independent 
+variables 
+=====================================================
+*/
+# Install libraries
+pip install SQLAlchemy
+pip install pandas
+pip install numpy
+pip install statsmodels
+pip install pyodbc
+pip install matplotlib
+pip install seaborn
+
+# Import libraries
+import pandas as pd
+from sqlalchemy import create_engine
+import numpy as np
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#Connect to the SQL file
+engine = create_engine(
+    "mssql+pyodbc://DESKTOP-32DPKFG\\SQLEXPRESS/Healthcare"
+    "?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
+)
+query = """
+SELECT uninsured, gender, age_band, sector, risk_tier,
+     region, mult
+FROM gold.regression_insured
+"""
+df = pd.read_sql(query, engine)
+# Check shape
+print(df.shape)   
+
+
+#Set the weight
+df['weight'] = df['mult'] / 100
+
+df = df.dropna(subset=['uninsured', 'gender', 'age_band', 'sector',
+                       'risk_tier', 'region'])
+
+# set baselines 
+df['risk_tier'] = pd.Categorical(df['risk_tier'], categories=[
+    'No Reported Ailment', 'Low risk', 'Medium risk',
+    'Childbirth related','High risk'])
+
+df['age_band'] = pd.Categorical(df['age_band'],
+                                categories=['18-39','40-59', '0-17','>= 60'])
+
+df['gender'] = pd.Categorical(df['gender'],
+                              categories=['Male', 'Female', 'Transgender', 'n/a'])
+
+
+print(df['region'].value_counts())  
+
+# Formula and Regression
+formula = ("uninsured ~ C(risk_tier) + C(gender) + C(age_band) "
+           "+ C(sector) + C(region)")
+
+model = smf.glm(formula,
+                data=df,
+                family=sm.families.Binomial(),
+                freq_weights=df['weight']).fit()
+
+print(model.summary())
+
+#Odds ratio
+results = pd.DataFrame({
+    'coefficient': model.params,
+    'odds_ratio':  np.exp(model.params),
+    'p_value':     model.pvalues
+    
+})
+
+results = results.round(4)
+
+print(results)
+results.to_csv('regression_results.csv', index=False)
+
+#Converting to percent
+results['odds_ratio'] = np.exp(results['coefficient'])
+results['percent'] = results['odds_ratio'].apply(lambda x: (x - 1) * 100)
+print(results[['odds_ratio', 'percent']])
+
+#Visualizing the result
+order = [
+    'C(region)[T.West]',
+    'C(region)[T.South]',
+    'C(region)[T.North]',
+    'C(region)[T.East]',
+    'C(sector)[T.Urban]',
+    'C(age_band)[T.Above 60]',
+    'C(age_band)[T.0-18]',
+    'C(age_band)[T.40-60]',
+    'C(gender)[T.n/a]',
+    'C(gender)[T.Transgender]',
+    'C(gender)[T.Female]',
+    'C(risk_tier)[T.Childbirth related]',
+    'C(risk_tier)[T.High risk]',
+    'C(risk_tier)[T.Medium risk]',
+    'C(risk_tier)[T.Low risk]',
+    'Intercept'
+]
+
+# Cleaner names for the chart
+labels = [
+    'Region: West',
+    'Region: South',
+    'Region: North',
+    'Region: East',
+    'Sector: Urban',
+    'Age: Above 60',
+    'Age: 0-18',
+    'Age: 40-60',
+    'Gender: Unknown',
+    'Gender: Transgender',
+    'Gender: Female',
+    'Risk severity: Childbirth',
+    'Risk severity: High',
+    'Risk severity: Medium',
+    'Risk severity: Low',
+    'Intercept'
+]
+
+# Reorder
+plot_data = results.loc[order, 'percent']
+
+# Plot
+ax = plot_data.plot.barh(
+    figsize=(5, 3),
+    color=[ "#074583" if x > 0 else "#A8A5A8" for x in plot_data ]
+)
+
+ax.set_yticklabels(labels)
+ax.set_xlabel('Left: % Decreasing likelihood, Right: % Increasing likelihood')
+ax.set_ylabel('')
+ax.set_title('Odds of Being Uninsured')
+
+plt.savefig("my_chart.png", dpi=300, bbox_inches="tight",transparent=True )
+plt.show()
+
