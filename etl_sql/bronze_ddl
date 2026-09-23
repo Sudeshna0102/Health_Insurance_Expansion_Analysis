@@ -1,0 +1,77 @@
+/*
+===============================================================================
+DDL Script: Create Bronze Tables
+===============================================================================
+Script Purpose:
+    This script creates tables in the 'bronze' schema, dropping existing tables 
+    if they already exist.
+	  Run this script to re-define the DDL structure of 'bronze' Tables
+===============================================================================
+*/
+
+DROP TABLE IF EXISTS bronze.household;
+CREATE TABLE bronze.household (
+	fsu_serial_no NVARCHAR(60),
+	sector NVARCHAR(60),
+	second_stage_stratum NVARCHAR(60),
+	household_id NVARCHAR(60),
+	insurance_premium FLOAT,
+	usual_monthly_consumer_exp FLOAT
+)	
+
+
+DROP TABLE IF EXISTS bronze.person;
+CREATE TABLE bronze.person (
+	fsu_serial_no NVARCHAR(60),
+	second_stage_stratum NVARCHAR(60),
+	household_id NVARCHAR(60),
+	person_id NVARCHAR(60),
+	gender NVARCHAR(60),
+	age INT,
+	no_times_hospitalized INT,
+	paid_childbirth NVARCHAR(60),
+	whether_insured NVARCHAR(60),
+	mult NVARCHAR(60),
+	state_id NVARCHAR(60)
+)
+
+DROP TABLE IF EXISTS bronze.hospitalisation;
+CREATE TABLE bronze.hospitalisation(
+	fsu_serial_no NVARCHAR(60),
+	second_stage_stratum NVARCHAR(60),
+	household_id NVARCHAR(60),
+	hospitalization_id NVARCHAR(60),
+	person_id NVARCHAR(60),
+	care_type NVARCHAR(60),
+	when_admitted NVARCHAR(60),
+	duration_stay INT,
+	expenditure FLOAT,
+	amount_covered FLOAT,
+	Major_source_spending NVARCHAR(60),
+    nature_ailment NVARCHAR(60),
+	state_id NVARCHAR(60),
+	mult INT
+)
+
+
+DROP TABLE IF EXISTS bronze.patient;
+CREATE TABLE bronze.patient(
+	fsu_serial_no NVARCHAR(60),
+	second_stage_stratum NVARCHAR(60),
+	household_id NVARCHAR(60),
+	opd_id NVARCHAR(60),
+	care_type NVARCHAR(60),
+	person_id NVARCHAR(60),
+	total_expenditure FLOAT,
+	amount_covered FLOAT,
+	major_source_spending NVARCHAR(60),
+	nature_ailment NVARCHAR(60),
+	state_id NVARCHAR(60),
+	mult INT
+)
+
+DROP TABLE IF EXISTS bronze.state_;
+CREATE TABLE bronze.state_(
+	st_ut NVARCHAR(60),
+	state_name NVARCHAR(60)
+)
