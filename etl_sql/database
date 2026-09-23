@@ -1,0 +1,33 @@
+/*==================================
+  Creating The Database And Schemas 
+===================================
+Objective: The script checks whether the database already exists and 
+if it does not then creates it and creates the three schemas "Golden",
+"Silver" and "Bronze". 
+Warning: Running this script will drop the entire 'DataWarehouse' database if 
+it exists. All data in the database will be permanently deleted. Proceed with 
+caution and ensure you have proper backups before running this script.
+*/
+--Drop and recreate the DataWarehouse database--
+USE master;
+GO
+IF EXISTS (SELECT 1 FROM sys.databases WHERE name='Healthcare')
+BEGIN
+ALTER DATABASE Healthcare SET MULTI_USER WITH ROLLBACK IMMEDIATE;
+DROP DATABASE Healthcare;
+END;
+GO
+
+--Create database
+CREATE DATABASE Healthcare;
+GO
+
+--Create Schema
+CREATE SCHEMA bronze;
+GO
+
+CREATE SCHEMA silver;
+GO
+
+CREATE SCHEMA gold;
+GO
