@@ -1,0 +1,93 @@
+/*
+===============================================================================
+DDL Script: Create Gold Views
+===============================================================================
+Purpose: Create the fact and dimension tables for the star schema
+*/
+--creating dim table gold.dim_person
+DROP VIEW gold.dim_person
+
+CREATE OR ALTER VIEW gold.dim_person AS
+	SELECT
+		p.person_key,
+		p.gender,
+		p.age,
+		p.whether_insured,
+		CASE WHEN p.whether_insured='No' THEN 0 ELSE 1 END AS Insured,
+		p.mult,
+		p.state_id,
+		h.sector,
+		h.usual_monthly_consumer_exp
+	FROM silver.person p
+	LEFT JOIN silver.household h
+	ON p.household_key = h.household_key
+	
+SELECT *
+FROM gold.dim_person
+where age ='>= 60'
+--creting dim table gold.fact_care
+DROP VIEW gold.fact_care
+
+CREATE OR ALTER VIEW gold.fact_care AS
+	SELECT
+		hp.person_key,
+		'H'+'-'+hp.hospitalisation_key AS 'patient_key',
+		hp.expenditure,
+		hp.amount_covered,
+		hp.nature_ailment,
+		hp.state_id,
+		h.insurance_premium,
+		h.usual_monthly_consumer_exp
+    FROM silver.household AS h
+	RIGHT JOIN silver.hospitalisation AS hp
+	ON h.household_key=hp.household_key
+
+	UNION ALL
+
+	SELECT
+		pt.person_key,
+		'NH'+'-'+pt.non_hospitalisation_key AS 'Patient_key',
+		pt.total_expenditure AS'expenditure',
+		pt.amount_covered,
+		pt.nature_ailment,
+		pt.state_id,
+		h.insurance_premium,
+		h.usual_monthly_consumer_exp
+	FROM silver.household AS h
+	RIGHT JOIN silver.patient AS pt
+	ON h.household_key=pt.household_key
+
+SELECT*
+FROM gold.fact_care
+
+--creating dim table dim_patient
+DROP VIEW gold.dim_patient
+
+CREATE VIEW gold.dim_patient AS
+SELECT DISTINCT
+		'H'+'-'+hospitalisation_key AS 'patient_key',
+		care_type,
+		major_source_spending		
+FROM silver.hospitalisation
+	UNION
+SELECT DISTINCT
+		'NH'+'-'+non_hospitalisation_key AS 'patient_key',
+		care_type,
+		major_source_spending
+FROM silver.patient
+
+SELECT *
+FROM gold.dim_patient
+
+--creating gold.dim_state_
+DROP VIEW gold.dim_state_
+
+CREATE OR ALTER VIEW gold.dim_state_ AS
+SELECT
+	st_ut,
+	state_name,
+	region
+FROM silver.state_	
+
+SELECT *
+FROM gold.dim_state_
