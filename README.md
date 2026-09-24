@@ -13,6 +13,10 @@ The study revolves around two key questions:
 1. Identify the potential for expansion in the Indian health insurance market.
 2. Identify the segments that marketing and financial teams should focus on.
 
+## Executive Summary
+The survey analysis identifies the **East and North** regions, the age group of **18-40**, the **urban areas** and most of the** middle class** as potential segments that can be targeted for a successful business expansion. Moreover, the potential for expansion is high in India as there is a substantial gap in insurance demand and number of insured reflected by a high **OOPE of 19,000 INR** per hospital visits. The sustainable loss ratio of 69% and 4.5 utilization rate indicates the further potential. The country has **52% uninsured** and only 1.88% privately insured despite having a substantial number of middle classes with purchasing power. The recommendations include targeted awareness campaigns and interactive PR efforts, adoptions of AI for customized policies and better communication as well as merging for being able to avail a better range of products with competitive price catering to the middle class.
+
+
 ## Key Metrics
 
 The study uses four key metrics to assess the initial potential of the Indian market.
@@ -82,4 +86,29 @@ The **utilization rate is approximately 4.5**, indicating nearly five healthcare
 <img width="250" height="170" alt="image" src="https://github.com/user-attachments/assets/c9e5dce6-d77d-4a44-a1da-bf189f0b556a" />
 <img width="250" height="170" alt="image" src="https://github.com/user-attachments/assets/46d13d67-49b9-498d-92ae-6944020ad244" />
 
+## Recommendations
 
+| Action                                                        | Specifications                                                                                                                                                                                                                                     | Priority | Concerned Team |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------: | -------------- |
+| **1. Targeted Marketing Campaign**                            | 1. Run awareness campaigns in the East and North regions. The campaigns should be innovative and educational, using innovative ads, catchy infographics for billboards, etc.                                                                       |    P0    | Marketing      |
+|                                                               | 2. Conduct interactive campaigns in urban areas, such as PR events and social events, to engage with potential customers.                                                                                                                          |    P0    | Marketing      |
+| **2. AI Integration for Seamless Purchase and Communication** | 1. Adopt AI within business apps for quick and easy communication. Keep multiple communication channels open for both tech-savvy and non-tech-savvy customers.                                                                                     |    P1    | Technical      |
+|                                                               | 2. Adopt advanced analytics and predictive models to suggest customized policies to the younger age group of 18–40, as younger people are less likely to have health insurance and their needs may not be categorized into generic policy options. |    P1    | Data           |
+| **3. Merging with Potential Partners**                        | 1. Identify potential partners to merge with to provide a wider range of products to the middle class in comptitive price, 3.Merging with potential partners	1.Identify potential partners to merge with to be able to avail a larger range of products in competitive price to the middle class, loss ratio should be checked during this action|	P2	| Executive
+
+ ## Project Workflow
+
+The project follows an end-to-end analytics workflow, from raw survey data preparation to statistical analysis, visualization, and business recommendations.
+
+
+### Tools & Technologies
+
+| Stage                     | Tool                    | Purpose                                                                               |
+| ------------------------- | ----------------------- | ------------------------------------------------------------------------------------- |
+| **Data Source**           | NSO 80th Round Survey(CSV)  | Healthcare and health insurance data                                                  |
+| **ETL & Data Modelling**  | SQL Server              | Data cleaning, transformation, integration, and creation of analytics-ready tables    |
+| **Statistical Analysis**  | Python                  | Logistic regression to analyze factors associated with being uninsured                |
+| **Business Intelligence** | Power BI                | KPI calculation, interactive dashboards, segmentation, and visualization              |
+| **Business Analysis**     | SQL + Python + Power BI | Identification of insurance gaps, target segments, and market expansion opportunities |
+| **Final Output**          | GitHub                  | Documentation of methodology, findings, and business recommendations                  |
+                                                                                                                                           
