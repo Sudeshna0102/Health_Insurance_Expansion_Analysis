@@ -138,3 +138,6 @@ Results:
 | South | 0.414 | -58.56% |
 | West | 0.482 | -51.78% |
 *The percent represents the increase or decreases in the odds of being uninsured compared to the baseline. A positive percentage signifies increasing odds and a negative percent signifies decreasing odds of being uninsured.
+
+## Assumptions and Caveats:
+The KPI and visualizations are not adjusted for survey weights, the regression results are adjusted for survey weights
