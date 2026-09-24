@@ -112,3 +112,29 @@ The project follows an end-to-end analytics workflow, from raw survey data prepa
 | **Business Analysis**     | SQL + Python + Power BI | Identification of insurance gaps, target segments, and market expansion opportunities |
 | **Final Output**          | GitHub                  | Documentation of methodology, findings, and business recommendations                  |
                                                                                                                                            
+Logistic Regression
+The project includes logistic regression to identify the odds of each factors happening that contribute to a person being uninsured. Uninsured is the dependent variable and age, gender, risk, sector, region are the independent variables. 
+Uninsured ~ Intercept + age_band + gender + risk_tier + sector + region 
+The intercept terms represent the odds of being uninsured when all other factors are held at zero. The intercept has also absorbed the baseline for each factor. The baseline for age_band is ‘18-40’, for gender is ‘male’, for risk_tier is ‘no reported ailment’ in other words the healthy persons, for sector is ‘rural’ and for region is ‘central’. 
+Results:
+### Logistic Regression Results
+
+| Variable | Odds Ratio | Percentage Change |
+|---|---:|---:|
+| Intercept | 1.729 | 72.89% |
+| Low Risk | 0.717 | -28.27% |
+| Medium Risk | 0.674 | -32.61% |
+| High Risk | 0.722 | -27.83% |
+| Childbirth Related | 0.938 | -6.15% |
+| Female | 1.040 | 4.01% |
+| Transgender | 0.969 | -3.15% |
+| N/A (Gender) | 1.000 | 0.00% |
+| Age 40–60 | 0.754 | -24.59% |
+| Age 0–18 | 1.000 | 0.00% |
+| Age Above 60 | 1.000 | 0.00% |
+| Urban | 1.362 | 36.23% |
+| East | 0.396 | -60.39% |
+| North | 0.742 | -25.79% |
+| South | 0.414 | -58.56% |
+| West | 0.482 | -51.78% |
+*The percent represents the increase or decreases in the odds of being uninsured compared to the baseline. A positive percentage signifies increasing odds and a negative percent signifies decreasing odds of being uninsured.
